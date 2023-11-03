@@ -54,7 +54,7 @@ loss = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 optim = keras.optimizers.Adam(learning_rate=0.001)
 metrics = ['accuracy']
 
-model.compile(optimizer = optim, loss = loss)
+model.compile(optimizer = optim, loss = loss, metrics=metrics)
 
 #training
 batch_size= 64
