@@ -12,7 +12,7 @@ import pandas as pd
 VOCAB_SIZE = 10000
 MAX_LEN = 250
 EMBEDDING_DIM = 16
-MODEL_PATH = 'sentiment_analysis_model.h5'
+MODEL_PATH = 'app/sentiment_analysis_model.h5'
 
 file_path = 'data.csv'
 data = pd.read_csv(file_path, encoding='ISO-8859-1')
@@ -37,7 +37,7 @@ sequences = tokenizer.texts_to_sequences(texts)
 padded_sequences = pad_sequences(sequences, maxlen=MAX_LEN, value=VOCAB_SIZE-1, padding='post')
 
 # Save the tokenizer to a file
-with open('tokenizer.pickle', 'wb') as handle:
+with open('app/tokenizer.pickle', 'wb') as handle:
     pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 # Split data into training and test sets (you might want to do this in a more balanced way)
@@ -64,7 +64,7 @@ else:
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
     # Train the model
-    model.fit(train_data, train_labels, epochs=10, batch_size=32, validation_split=0.2)
+    model.fit(train_data, train_labels, epochs=2, batch_size=32, validation_split=0.2)
 
     # Save the trained model
     model.save(MODEL_PATH)
