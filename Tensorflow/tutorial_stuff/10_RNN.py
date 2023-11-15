@@ -16,6 +16,8 @@ X_train, X_test = X_train/255.0, X_test/255.0
 model = keras.models.Sequential()
 model.add(keras.Input(shape=(28,28))) # seq_length, input_size
 # model.add(keras.layers.SimpleRNN(units=128,return_sequences=True ,activation='relu')) # N, 28, 128
+# model.add(keras.layers.GRU(units=128,return_sequences=True ,activation='relu')) # N, 28, 128
+# model.add(keras.layers.LSTM(units=128,return_sequences=True ,activation='relu')) # N, 28, 128
 model.add(keras.layers.SimpleRNN(units=128,return_sequences=False ,activation='relu')) # N, 128
 model.add(keras.layers.Dense(10))
 
