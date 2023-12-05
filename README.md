@@ -1,2 +1,6 @@
 # Data_Science
-# abc
+
+### Basics to look up in
+- Pytorch
+- Tensorflow
+- Sklearn
