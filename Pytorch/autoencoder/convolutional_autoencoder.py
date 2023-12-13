@@ -13,27 +13,25 @@ data_loader = torch.utils.data.DataLoader(dataset=mnist_data,
                                           batch_size=64,
                                           shuffle=True)
 
-class Autoencoder(nn.Module):
+class Conv_Autoencoder(nn.Module):
     def __init__(self):
-        super(Autoencoder, self).__init__()
+        super(Conv_Autoencoder, self).__init__()
+        # 1, 28, 28
         self.encoder = nn.Sequential(
-            nn.Linear(in_features=28*28, out_features=128),
+            nn.Conv2d(in_channels=1, out_channels=16, kernel_size=3, stride=2, padding=1), #16, 14, 14
             nn.ReLU(),
-            nn.Linear(128, 64),
+            nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=2, padding=1), #32, 7, 7
             nn.ReLU(),
-            nn.Linear(64, 12),
-            nn.ReLU(),
-            nn.Linear(12, 3)
+            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=7), # 64, 1, 1
         )
 
         self.decoder = nn.Sequential(
-            nn.Linear(in_features=3, out_features=12),
+             #64, 1, 1
+            nn.ConvTranspose2d(in_channels=64, out_channels=32, kernel_size=7), # 32, 7, 7
             nn.ReLU(),
-            nn.Linear(12, 64),
+            nn.ConvTranspose2d(in_channels=32, out_channels=16, kernel_size=3, stride=2, padding=1, output_padding=1), #16, 14, 14
             nn.ReLU(),
-            nn.Linear(64, 128),
-            nn.ReLU(),
-            nn.Linear(128, 28*28),
+            nn.ConvTranspose2d(in_channels=16, out_channels=1, kernel_size=3, stride=2, padding=1, output_padding=1), #1, 28, 28
             nn.Sigmoid()
         )
 
@@ -43,18 +41,17 @@ class Autoencoder(nn.Module):
 
         return output
     
-model = Autoencoder()
+model = Conv_Autoencoder()
 criterion = nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
 
 
 
-num_epochs = 8
+num_epochs = 12
 outputs= []
 
 for epoch in range(num_epochs):
     for (img,_ ) in data_loader:
-        img = img.reshape(-1, 28*28)
         recon = model(img)
         loss = criterion(recon, img)
 
@@ -68,6 +65,7 @@ for epoch in range(num_epochs):
 
 
 
+
 for k in range(0, num_epochs, 4):
     plt.figure(figsize=(9, 2))
     plt.gray()
@@ -77,13 +75,15 @@ for k in range(0, num_epochs, 4):
         if i >= 9: 
             break
         plt.subplot(2, 9, i+1)
-        # item = item.reshape(-1, 28,28) # -> use for Autoencoder_Linear
+        #item = item.reshape(-1, 28,28) # -> use for Autoencoder_Linear
         # item: 1, 28, 28
         plt.imshow(item[0])
             
     for i, item in enumerate(recon):
         if i >= 9: break
         plt.subplot(2, 9, 9+i+1) # row_length + i + 1
-        # item = item.reshape(-1, 28,28) # -> use for Autoencoder_Linear
+        #item = item.reshape(-1, 28,28) # -> use for Autoencoder_Linear
         # item: 1, 28, 28
         plt.imshow(item[0])
+
+plt.show()
