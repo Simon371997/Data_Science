@@ -1,0 +1,1 @@
+- Original --> ENCODER --> Encoded Image --> DECODER --> Reconstructed Image
